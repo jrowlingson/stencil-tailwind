@@ -8,25 +8,7 @@ const tailwindcss = require('tailwindcss')
 
 let stylesTree
 
-function _staticStyles(code) {
-  if (code.match(/class: "(.+?)"/gs)) {
-    let tokens = code.replace(/[\n'}]+/gm, '').match(/class: "(.+?)"/gs)
-    tokens = tokens
-      .map(str =>  str.match(/"(.*)"/)[1])
-      .join(' ')
-      .split(' ')
-      .filter(s => s !== '')
-    const result = stylesTree.root.nodes.reduce((acc, node) => {
-      if (node.selector && tokens.includes(node.selector.substring(1))) {
-        return node.toString().replace(/(\r\n|\n|\r)/gm, '') + ' \\n' + acc
-      }
-      return acc
-    }, '')
-    return result
-  }
-}
-
-function rollupPluginTailwind() {
+function rollupPluginTailwind(path) {
 
   return {
     name: 'rollup-plugin-tailwind',
@@ -45,24 +27,54 @@ function rollupPluginTailwind() {
 
     transform(code, id) {
       if (id.includes('components')) {
-        if (id.includes('checkbox')) {
-          let match = /= (.*?Style);/.exec(code)
-          if (match) {
-            const s = new MagicString(code)
-            const styles = _staticStyles(code)
-            if (styles) {
-              s.overwrite(match.index, match.index + match[1].length + 2,`= \`${styles} \${${match[1]}}\``)
-            }
-            return {
-              code: s.toString()
-            }
+        let match = /= (.*?Style);/.exec(code)
+        if (match) {
+          const s = new MagicString(code)
+          const styles = _staticStyles(code)
+          if (styles) {
+            s.overwrite(match.index, match.index + match[1].length + 2,`= \`${styles} \${${match[1]}}\``)
+          }
+          return {
+            code: s.toString()
           }
         }
+
+        // TODO: jrowlingson - enable @theme()
+        // postcss([
+        //   tailwindcss()
+        // ])
+        //   .process(match[1].replace(/\\"/gm, '"'))
+        //   .then(result => {
+        //     log(red(result))
+        //   })
       }
     },
 
   }
 
+}
+
+function _staticStyles(code) {
+  const classes = _parseClasses(code)
+  // log(blue(classes))
+  if (classes) {
+    return stylesTree.root.nodes.reduce((acc, node) =>
+      node.selector && classes.includes(node.selector.substring(1))
+        ? node.toString().replace(/(\r\n|\n|\r)/gm, '') + ' \\n' + acc
+        : acc, '')
+  }
+}
+
+function _parseClasses(code) {
+  const classAttrs = code.match(/class: ["`](.+?)["`]/gs)
+  if (classAttrs) {
+    return classAttrs
+      .map(str => str.replace(/[\n'{}$:?]+/gm, ''))
+      .map(str => str.match(/["`](.*)["`]/)[1])
+      .join(' ')
+      .split(' ')
+      .filter(str => str !== '')
+  }
 }
 
 module.exports = rollupPluginTailwind
