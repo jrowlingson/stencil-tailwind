@@ -3,8 +3,8 @@ const fs = require('fs')
 const postcss = require('postcss')
 const tailwindcss = require('tailwindcss')
 
-// const log = console.log
-// const { blue, magenta, red } = require('chalk')
+const debug = require('debug')('rollup-tw')
+const logtime = require('debug')('rollup-tw:t')
 
 let stylesTree
 
@@ -14,6 +14,7 @@ function rollupPluginTailwind(path) {
     name: 'rollup-plugin-tailwind',
 
     buildStart() {
+      logtime('build start')
       fs.readFile('src/app.css', (err, css) => {
         postcss([
           tailwindcss()
@@ -21,12 +22,15 @@ function rollupPluginTailwind(path) {
         .process(css)
         .then(result => {
           stylesTree = result
+          logtime('style tree built')
         })
       })
     },
 
     transform(code, id) {
-      if (id.includes('components')) {
+      if (id.includes('/components')) {
+        debug(id)
+        // debug(code)
         let match = /= (.*?Style);/.exec(code)
         if (match) {
           const s = new MagicString(code)
@@ -56,7 +60,7 @@ function rollupPluginTailwind(path) {
 
 function _staticStyles(code) {
   const classes = _parseClasses(code)
-  // log(blue(classes))
+  debug(classes)
   if (classes) {
     return stylesTree.root.nodes.reduce((acc, node) =>
       node.selector && classes.includes(node.selector.substring(1))
@@ -69,7 +73,7 @@ function _parseClasses(code) {
   const classAttrs = code.match(/class: ["`](.+?)["`]/gs)
   if (classAttrs) {
     return classAttrs
-      .map(str => str.replace(/[\n'{}$:?]+/gm, ''))
+      .map(str => str.replace(/[\n'{}$?]+/gm, ''))
       .map(str => str.match(/["`](.*)["`]/)[1])
       .join(' ')
       .split(' ')
