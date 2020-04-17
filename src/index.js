@@ -8,7 +8,7 @@ const logtime = require('debug')('rollup-tw:t')
 
 let stylesTree
 
-function rollupPluginTailwind(path) {
+function rollupPluginTailwind() {
 
   return {
     name: 'rollup-plugin-tailwind',
@@ -39,7 +39,7 @@ function rollupPluginTailwind(path) {
             s.overwrite(match.index, match.index + match[1].length + 2,`= \`${styles} \${${match[1]}}\``)
           }
           return {
-            code: s.toString()
+            code: s.toString().replace(/\\:/g, '\\\\:')
           }
         }
 
@@ -63,7 +63,7 @@ function _staticStyles(code) {
   debug(classes)
   if (classes) {
     return stylesTree.root.nodes.reduce((acc, node) =>
-      node.selector && classes.includes(node.selector.substring(1))
+      node.selector && classes.includes(node.selector.substring(1).replace(/\\/, '').replace(/(?<=:.*):.*/, ''))
         ? node.toString().replace(/(\r\n|\n|\r)/gm, '') + ' \\n' + acc
         : acc, '')
   }
