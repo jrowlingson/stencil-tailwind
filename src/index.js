@@ -2,7 +2,7 @@ const MagicString = require('magic-string')
 const fs = require('fs')
 const postcss = require('postcss')
 const tailwindcss = require('tailwindcss')
-// const { red, blue, yellow } = require('chalk')
+const { red, blue, yellow } = require('chalk')
 
 const debug = require('debug')('rollup-tw')
 const logtime = require('debug')('rollup-tw:t')
@@ -24,6 +24,7 @@ function rollupPluginTailwind() {
         .then(result => {
           stylesTree = result
           logtime('style tree built')
+          fs.writeFile('www/build/tailwind.css', result.css, () => true)
         })
       })
     },
@@ -77,16 +78,28 @@ function _staticStyles(code) {
 }
 
 function _parseClasses(code) {
-  const classAttrs = code.match(/class: ["`](.+?)["`]/gs)
+  const classAttrs = code.match(/class: .*?["`](.+?)["`]/gs)
   if (classAttrs) {
     return classAttrs
-      .map(str => str.replace(/[\n'{}$?]+/gm, ''))
+      .map(str => str.replace(/this.\S+|:\s|\S+<|[\n'{}$?<>+=|()]+/gm, ''))
       .map(str => str.match(/["`](.*)["`]/)[1])
+      .map(_parseExperimentalDsl)
       .join(' ')
       .split(' ')
       .filter(str => str !== '')
   }
 }
 
-module.exports = rollupPluginTailwind
+function _parseExperimentalDsl(str) {
+  const matches = str.match(/\S+\[(.*?)]/g)
+  if (matches) {
+    const expanded = matches.reduce((acc, token) => {
+      const tokens = token.match(/(\S+)\[(.*?)]/)
+      return `${acc} ${tokens[1]} ${tokens[1]}${tokens[2].split(' ')[0]} ${tokens[1]}${tokens[2].split(' ')[1]}`
+    }, '')
+    return `${str} ${expanded}`
+  }
+  return str
+}
 
+module.exports = rollupPluginTailwind
