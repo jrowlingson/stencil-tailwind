@@ -71,7 +71,7 @@ function _staticStyles(code) {
   debug(classes)
   if (classes) {
     return stylesTree.root.nodes.reduce((acc, node) =>
-      node.selector && classes.includes(node.selector.substring(1).replace(/\\/, '').replace(/(?<=:.*):.*/, ''))
+      node.selector && classes.includes(node.selector.replace(/\\/, '').match(/([a-zA-Z0-9-]+$|[a-zA-Z0-9-]+:[a-zA-Z0-9-]+)/)[0])
         ? node.toString().replace(/(\r\n|\n|\r)/gm, '') + ' \\n' + acc
         : acc, '')
   }
