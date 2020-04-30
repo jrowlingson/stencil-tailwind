@@ -16,6 +16,6 @@
     "debug": "^4.1.1",
     "magic-string": "^0.25.7",
     "postcss": "^7.0.27",
-    "tailwindcss": "^1.2.0"
+    "tailwindcss": "1.2.0"
   }
 }
