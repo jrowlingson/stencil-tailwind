@@ -34,7 +34,9 @@ function rollupPluginTailwind() {
         return await _transformStyles(code)
       }
       if (id.includes('/components')) {
-        return _transformTsx(code)
+        const ast = this.parse(code)
+        const classStrings = getClassFunctionStrings(code, ast)
+        return _transformTsx(code, classStrings)
       }
     },
 
@@ -42,11 +44,34 @@ function rollupPluginTailwind() {
 
 }
 
-function _transformTsx(code) {
+function getClassFunctionStrings(code, tree) {
+  let classStrings = []
+  //find export of component class
+  const classExport = tree.body.find(node => {
+    return node.type === "ExportNamedDeclaration"
+      && node.declaration.declarations
+      && node.declaration.declarations[0].init.type === "ClassExpression"
+  })
+  if (classExport) {
+    const classNode = classExport.declaration.declarations[0].init
+    //find methods that end in "Class"
+    const classMethodNodes = classNode.body.body.filter(node => node.type === "MethodDefinition" && node.key.name.match(/.*?Class/))
+    classMethodNodes.forEach(node => {
+      const { start, end } = node
+      const functionString = code.substring(start, end)
+      //find strings within those methods
+      const matches = functionString.match(/["`](.+?)["`]/gs)
+      classStrings = classStrings.concat(matches)
+    })
+  }
+  return classStrings
+}
+
+function _transformTsx(code, classStrings) {
   let match = /= (.*?Style);/.exec(code)
   if (match) {
     const s = new MagicString(code)
-    const styles = _staticStyles(code)
+    const styles = _staticStyles(code, classStrings)
     if (styles) {
       s.overwrite(match.index, match.index + match[1].length + 2,`= \`${styles} \${${match[1]}}\``)
     }
@@ -66,8 +91,8 @@ async function _transformStyles(code) {
   }
 }
 
-function _staticStyles(code) {
-  const classes = _parseClasses(code)
+function _staticStyles(code, classStrings) {
+  const classes = _parseClasses(code, classStrings)
   debug(classes)
   if (classes) {
     return stylesTree.root.nodes.reduce((acc, node) =>
@@ -77,8 +102,9 @@ function _staticStyles(code) {
   }
 }
 
-function _parseClasses(code) {
-  const classAttrs = code.match(/class: .*?["`](.+?)["`]/gs)
+function _parseClasses(code, classStrings) {
+  let classAttrs = code.match(/class: .*?["`](.+?)["`]/gs) || []
+  classAttrs = classAttrs.concat(classStrings)
   if (classAttrs) {
     return classAttrs
       .map(str => str.replace(/this.\S+|:\s|\S+<|[\n'{}$?<>+=|()]+/gm, ''))
