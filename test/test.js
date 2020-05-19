@@ -1,0 +1,36 @@
+import getCodeFromBundle from '../test/helpers/test-helpers.js'
+import tailwind from '../src/index.js'
+import test from 'ava'
+import { readFileSync } from 'fs'
+import { rollup } from 'rollup'
+
+test('inline class: literal', async (t) => {
+  const bundle = await rollup({
+    input: 'test/fixtures/components/inline-class/literal.input',
+    plugins: [ tailwind() ]
+  })
+  const actual = await getCodeFromBundle(bundle)
+  const expected = readFileSync('test/fixtures/components/inline-class/literal.output.js', 'utf-8');
+  t.is(actual, expected)
+})
+
+test('inline class: conditional expression', async (t) => {
+  const bundle = await rollup({
+    input: 'test/fixtures/components/inline-class/cond-expression.input',
+    plugins: [ tailwind() ]
+  })
+  const actual = await getCodeFromBundle(bundle)
+  const expected = readFileSync('test/fixtures/components/inline-class/cond-expression.output.js', 'utf-8');
+  t.is(actual, expected)
+})
+
+test('style decorator', async (t) => {
+  const bundle = await rollup({
+    input: 'test/fixtures/components/decorator/input',
+    plugins: [ tailwind() ]
+  })
+  const actual = await getCodeFromBundle(bundle)
+  const expected = readFileSync('test/fixtures/components/decorator/output.js', 'utf-8');
+  t.is(actual, expected)
+})
+

@@ -1,21 +1,40 @@
 {
   "name": "rollup-plugin-tailwind",
   "version": "0.0.1",
+  "type": "module",
   "description": "",
-  "main": "src/index.js",
+  "main": "dist/index.js",
   "directories": {
     "test": "test"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "rollup -c",
+    "test": "ava",
+    "debug": "export DEBUG=* DEBUG_COLORS=true FORCE_COLOR=1 && rollup -c && ava"
   },
   "author": "",
   "license": "ISC",
+  "peerDependencies": {
+    "rollup": "^2.10.2"
+  },
   "dependencies": {
+    "ava": "^3.8.2",
     "chalk": "^4.0.0",
     "debug": "^4.1.1",
     "magic-string": "^0.25.7",
     "postcss": "^7.0.27",
     "tailwindcss": "1.2.0"
+  },
+  "devDependencies": {
+    "acorn-walk": "^7.1.1",
+    "rollup": "^2.10.2"
+  },
+  "ava": {
+    "files": [
+      "!**/fixtures/**",
+      "!**/helpers/**",
+      "!**/recipes/**",
+      "!**/types.ts"
+    ]
   }
 }

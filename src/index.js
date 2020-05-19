@@ -1,22 +1,26 @@
-const MagicString = require('magic-string')
-const fs = require('fs')
-const postcss = require('postcss')
-const tailwindcss = require('tailwindcss')
-const { red, blue, yellow } = require('chalk')
+import MagicString from 'magic-string'
+import chalk from 'chalk'
+import debug from 'debug'
+import fs from 'fs'
+import postcss from 'postcss'
+import tailwindcss from 'tailwindcss'
+import walk from 'acorn-walk'
 
-const debug = require('debug')('rollup-tw')
-const logtime = require('debug')('rollup-tw:t')
+const { red, blue, yellow } = chalk
+const log = debug('rollup-tw')
+const logtime = debug('rollup-tw:t')
 
 let stylesTree
 
-function rollupPluginTailwind() {
+export default function rollupPluginTailwind() {
 
   return {
+
     name: 'rollup-plugin-tailwind',
 
-    buildStart() {
+    async buildStart() {
       logtime('build start')
-      fs.readFile('src/app.css', (err, css) => {
+      return fs.readFile('src/app.css', (err, css) => {
         postcss([
           tailwindcss()
         ])
@@ -34,7 +38,7 @@ function rollupPluginTailwind() {
         return await _transformStyles(code)
       }
       if (id.includes('/components')) {
-        return _transformTsx(code)
+        return _transformTsx(code, this.parse(code))
       }
     },
 
@@ -42,11 +46,12 @@ function rollupPluginTailwind() {
 
 }
 
-function _transformTsx(code) {
+function _transformTsx(code,node) {
   let match = /= (.*?Style);/.exec(code)
   if (match) {
+    log(red(code))
     const s = new MagicString(code)
-    const styles = _staticStyles(code)
+    const styles = _staticStyles(node)
     if (styles) {
       s.overwrite(match.index, match.index + match[1].length + 2,`= \`${styles} \${${match[1]}}\``)
     }
@@ -68,7 +73,7 @@ async function _transformStyles(code) {
 
 function _staticStyles(code) {
   const classes = _parseClasses(code)
-  debug(classes)
+  log(red(classes))
   if (classes) {
     return stylesTree.root.nodes.reduce((acc, node) =>
       node.selector && classes.includes(node.selector.replace(/\\/, '').match(/([a-zA-Z0-9-]+$|[a-zA-Z0-9-]+:[a-zA-Z0-9-]+)/)[0])
@@ -77,29 +82,53 @@ function _staticStyles(code) {
   }
 }
 
-function _parseClasses(code) {
-  const classAttrs = code.match(/class: .*?["`](.+?)["`]/gs)
-  if (classAttrs) {
-    return classAttrs
-      .map(str => str.replace(/this.\S+|:\s|\S+<|[\n'{}$?<>+=|()]+/gm, ''))
-      .map(str => str.match(/["`](.*)["`]/)[1])
-      .map(_parseExperimentalDsl)
-      .join(' ')
-      .split(' ')
-      .filter(str => str !== '')
-  }
+function _parseClasses(node) {
+  return _parseStyleDecorator(node).concat(_parseInlineClasses(node))
 }
 
-function _parseExperimentalDsl(str) {
-  const matches = str.match(/\S+\[(.*?)]/g)
-  if (matches) {
-    const expanded = matches.reduce((acc, token) => {
-      const tokens = token.match(/(\S+)\[(.*?)]/)
-      return `${acc} ${tokens[1]} ${tokens[1]}${tokens[2].split(' ')[0]} ${tokens[1]}${tokens[2].split(' ')[1]}`
-    }, '')
-    return `${str} ${expanded}`
-  }
-  return str
+function _parseInlineClasses(node) {
+  let result = []
+  walk.simple(node, {
+    Property({ key: { name }, value }) {
+      if (name === 'class') {
+        walk.simple(value, {
+          Literal(n) {
+            result = result.concat(_trimSizingDsl(n.value).split(' '))
+          }
+        })
+      }
+    }
+  })
+  return result
 }
 
-module.exports = rollupPluginTailwind
+function _parseStyleDecorator(node) {
+  let result = []
+  walk.simple(node, {
+    CallExpression(ce) {
+      if (ce.callee.name === '__decorate') {
+        walk.simple(ce, {
+          Literal(lit) {
+            walk.simple(node, {
+              AssignmentExpression(ae) {
+                if(ae.left.property.name === lit.value) {
+                  walk.simple(ae.right.body, {
+                    Property(p) {
+                      result = result.concat(_trimSizingDsl(p.key.value).split(' '))
+                    }
+                  })
+                }
+              }
+            })
+          }
+        })
+      }
+    },
+
+  })
+  return result
+}
+
+function _trimSizingDsl(string) {
+  return string.replace(/\S+<|[<>]/gm, '')
+}
