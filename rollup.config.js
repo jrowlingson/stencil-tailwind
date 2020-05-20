@@ -10,4 +10,3 @@ export default {
   ],
   external: [ 'module', 'tailwindcss',  Object.keys(pkg.dependencies || {}) ]
 }
-
