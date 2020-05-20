@@ -1,13 +1,13 @@
-const { builtinModules } = require('module');
+import typescript from '@rollup/plugin-typescript'
+import pkg from './package.json'
 
-const pkg = require('./package.json');
+export default {
+  input: 'src/index.ts',
+  plugins: [ typescript() ],
+  output: [
+    { format: 'esm', file: pkg.module },
+    { format: 'cjs', file: pkg.main }
+  ],
+  external: [ 'module', 'tailwindcss',  Object.keys(pkg.dependencies || {}) ]
+}
 
-const dependencies = Object.keys(pkg.dependencies || {});
-
-export default [
-  {
-    input: 'src/index.js',
-    output: { exports: 'named', file: 'dist/index.js', format: 'cjs' },
-    external: [...builtinModules, ...dependencies]
-  }
-];
