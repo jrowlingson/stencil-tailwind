@@ -1,4 +1,4 @@
-import { Plugin } from 'rollup'
 import { Node } from 'acorn'
+import { Plugin } from 'rollup'
 
-export default function rollupPluginTailwind(): Plugin
+export default function tailwind(): Plugin

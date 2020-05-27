@@ -1,7 +1,7 @@
 import { debug as _debug } from 'debug';
 import { red, green, blue, yellow } from 'chalk'
 
-const NAMESPACE = 'rollup-tw'
+const NAMESPACE = 'stencil-tw'
 
 export default {
   time: _debug(`${NAMESPACE}:t`),

@@ -1,5 +1,5 @@
 {
-  "name": "rollup-plugin-tailwind",
+  "name": "stencil-tailwind",
   "version": "0.0.1",
   "description": "",
   "main": "dist/index.js",

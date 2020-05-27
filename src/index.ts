@@ -8,11 +8,11 @@ import { readFile, writeFile } from 'fs'
 
 let stylesRoot: Root
 
-export default function rollupPluginTailwind(): Plugin {
+export default function tailwind(): Plugin {
 
   return {
 
-    name: 'rollup-plugin-tailwind',
+    name: 'tailwind',
 
     async buildStart() {
       debug.time('build start')
