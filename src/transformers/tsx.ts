@@ -2,7 +2,7 @@ import MagicString from 'magic-string'
 import debug from '../util/debug'
 import walk from 'acorn-walk'
 import { Node } from 'acorn'
-import { Root } from 'postcss'
+import { Root, ChildNode, Rule } from 'postcss'
 import { TransformResult } from 'rollup'
 
 export default function transformTsx(code: string, node: Node, cssRoot: Root): TransformResult {
@@ -10,9 +10,9 @@ export default function transformTsx(code: string, node: Node, cssRoot: Root): T
   if (match) {
     debug.red(code)
     const s = new MagicString(code)
-    const styles = _staticStyles(node, cssRoot)
-    if (styles) {
-      s.overwrite(match.index, match.index + match[1].length + 2,`= \`${styles} \${${match[1]}}\``)
+    const utilityClasses = _buildTailwindClassList(node, cssRoot)
+    if (utilityClasses) {
+      s.overwrite(match.index, match.index + match[1].length + 2,`= \`${utilityClasses} \${${match[1]}}\``)
     }
     return {
       code: s.toString().replace(/\\:/g, '\\\\:')
@@ -20,12 +20,12 @@ export default function transformTsx(code: string, node: Node, cssRoot: Root): T
   }
 }
 
-function _staticStyles(node: Node, cssRoot: Root): string | undefined {
+function _buildTailwindClassList(node: Node, cssRoot: Root): string | undefined {
   const classes = _parseClasses(node)
   if (classes.length) {
-    return cssRoot?.nodes?.reduce((acc: any, node: any) =>
-      node.selector && classes.includes(node.selector.replace(/\\/, '').match(/([a-zA-Z0-9-]+$|[a-zA-Z0-9-]+:[a-zA-Z0-9-]+)/)[0])
-        ? node.toString().replace(/(\r\n|\n|\r)/gm, '') + ' \\n' + acc
+    return cssRoot?.nodes?.filter(isRule).reduce((acc: any, rule: Rule) =>
+      classes.includes(rule.selector.replace(/\\/, '').match(/([a-zA-Z0-9-]+$|[a-zA-Z0-9-]+:[a-zA-Z0-9-]+)/)![0])
+        ? rule.toString().replace(/(\r\n|\n|\r)/gm, '') + ' \\n' + acc
         : acc, '')
   }
 }
@@ -40,8 +40,7 @@ function _parseInlineClasses(node: Node) {
     Property(prop: any) {
       if (prop?.key?.name === 'class') {
         walk.simple(prop?.value, {
-          Literal(n) {
-            // @ts-ignore
+          Literal(n: any) {
             result = result.concat(_trimSizingDslSyntax(n.value).split(' '))
           }
         })
@@ -83,4 +82,8 @@ function _parseStyleDecorator(node: Node) {
 
 function _trimSizingDslSyntax(s: string) {
   return s.toString().replace(/\S+<|[<>]/gm, '')
+}
+
+function isRule(node: ChildNode): node is Rule {
+  return (node as Rule).selector !== undefined;
 }
