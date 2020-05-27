@@ -4,15 +4,15 @@ const postcss = require('postcss')
 const tailwindcss = require('tailwindcss')
 const { red, blue, yellow } = require('chalk')
 
-const debug = require('debug')('rollup-tw')
-const logtime = require('debug')('rollup-tw:t')
+const debug = require('debug')('stencil-tw')
+const logtime = require('debug')('stencil-tw:t')
 
 let stylesTree
 
-function rollupPluginTailwind() {
+function tailwind() {
 
   return {
-    name: 'rollup-plugin-tailwind',
+    name: 'tailwind',
 
     buildStart() {
       logtime('build start')
@@ -128,4 +128,4 @@ function _parseExperimentalDsl(str) {
   return str
 }
 
-module.exports = rollupPluginTailwind
+module.exports = tailwind
