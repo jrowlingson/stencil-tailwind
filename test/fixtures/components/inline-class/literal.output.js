@@ -9,6 +9,6 @@ const CalciteButton = class {
   }
 
 };
-CalciteButton.style = `.text-sm {  font-size: 0.875rem} \n.p-4 {  padding: 1rem} \n ${calciteButtonStyle}`;
+CalciteButton.style = `.text-sm {  font-size: 0.875rem;} \n.p-4 {  padding: 1rem;} \n ${calciteButtonStyle}`;
 
 exports.CalciteButton = CalciteButton;

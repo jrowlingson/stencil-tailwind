@@ -16,6 +16,6 @@ const CalciteButton = class {
 __decorate([
   Styles()
 ], CalciteButton.prototype, "classNames", void 0);
-CalciteButton.style = `.text-lg {  font-size: 1.125rem} \n.text-sm {  font-size: 0.875rem} \n.px-8 {  padding-left: 2rem;  padding-right: 2rem} \n.px-4 {  padding-left: 1rem;  padding-right: 1rem} \n.p-12 {  padding: 3rem} \n ${calciteButtonStyle}`;
+CalciteButton.style = `.text-lg {  font-size: 1.125rem;} \n.text-sm {  font-size: 0.875rem;} \n.px-8 {  padding-left: 2rem;  padding-right: 2rem;} \n.px-4 {  padding-left: 1rem;  padding-right: 1rem;} \n.p-12 {  padding: 3rem;} \n ${calciteButtonStyle}`;
 
 exports.CalciteButton = CalciteButton;

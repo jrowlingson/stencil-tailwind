@@ -23,10 +23,12 @@ export default function transformTsx(code: string, node: Node, cssRoot: Root): T
 function _buildTailwindClassList(node: Node, cssRoot: Root): string | undefined {
   const classes = _parseClasses(node)
   if (classes.length) {
-    return cssRoot?.nodes?.filter(isRule).reduce((acc: any, rule: Rule) =>
-      classes.includes(rule.selector.replace(/\\/, '').match(/([a-zA-Z0-9-]+$|[a-zA-Z0-9-]+:[a-zA-Z0-9-]+)/)![0])
-        ? rule.toString().replace(/(\r\n|\n|\r)/gm, '') + ' \\n' + acc
-        : acc, '')
+    return cssRoot?.nodes?.filter(isRule).reduce((acc: any, rule: Rule) => {
+      const match = rule.selector.replace(/\\/, '').match(/([a-zA-Z0-9-]+$|[a-zA-Z0-9-]+:[a-zA-Z0-9-]+)/)
+      return match
+        ? classes.includes(match![0]) ? rule.toString().replace(/(\r\n|\n|\r)/gm, '') + ' \\n' + acc : acc
+        : acc
+    }, '')
   }
 }
 

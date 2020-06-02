@@ -3,12 +3,16 @@ import postcss, { Root } from 'postcss'
 import tailwindcss from 'tailwindcss'
 import transformSass from './transformers/sass'
 import transformTsx from './transformers/tsx'
-import { Plugin } from 'rollup'
-import { readFile, writeFile } from 'fs'
+import { Plugin, PluginOptions } from '../types'
+import { promises as fsPromises } from 'fs'
 
-let stylesRoot: Root
+const { readFile } = fsPromises
 
-export default function tailwind(): Plugin {
+let postcssRoot: Root
+
+export default function tailwind(opts?: PluginOptions): Plugin {
+
+  const options = _buildOptions(opts)
 
   return {
 
@@ -16,27 +20,39 @@ export default function tailwind(): Plugin {
 
     async buildStart() {
       debug.time('build start')
-      return readFile('src/app.css', (_err, css) => {
-        postcss([
-          tailwindcss()
-        ])
+      return readFile(options.inputFile).then(async css =>
+        postcss([ tailwindcss() ])
           .process(css)
-          .then(result => {
+          .then(async result => {
             debug.time('style tree built')
-            stylesRoot = result.root!
-            writeFile('www/build/tailwind.css', result.css, () => true)
+            if (options.includeTailwindCss) {
+              this.emitFile({
+                type: 'asset',
+                source: result.toString(),
+                fileName: 'calcite-tailwind.css'
+              })
+            }
+            postcssRoot = result.root!
           })
-      })
+      )
     },
 
-    async transform(code, id) {
-      if (id.includes('.scss')) {
-        return await transformSass(code)
-      } else if (id.includes('.tsx')) {
-        return transformTsx(code, this.parse(code, {}), stylesRoot)
+    async transform(sourceText, fileName) {
+      if (fileName.includes('.scss')) {
+        return await transformSass(sourceText)
+      } else if (fileName.includes('.tsx')) {
+        return transformTsx(sourceText, this.parse(sourceText, {}), postcssRoot)
       }
     },
 
   }
 
+}
+
+function _buildOptions(opts?: PluginOptions): PluginOptions {
+  const defaults: PluginOptions = {
+    inputFile: 'src/app.css',
+    includeTailwindCss: true
+  }
+  return Object.assign({}, defaults, opts)
 }

@@ -1,4 +1,10 @@
-import { Node } from 'acorn'
-import { Plugin } from 'rollup'
+export { Plugin } from 'rollup'
 
-export default function tailwind(): Plugin
+export interface PluginOptions {
+
+  inputFile: string,
+  includeTailwindCss: boolean
+
+}
+
+export default function tailwind(opts?: PluginOptions): Plugin

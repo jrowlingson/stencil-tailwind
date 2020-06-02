@@ -9,6 +9,6 @@ const CalciteButton = class {
   }
 
 };
-CalciteButton.style = `.ml-2 {  margin-left: 0.5rem} \n.mr-2 {  margin-right: 0.5rem} \n ${calciteButtonStyle}`;
+CalciteButton.style = `.ml-2 {  margin-left: 0.5rem;} \n.mr-2 {  margin-right: 0.5rem;} \n ${calciteButtonStyle}`;
 
 exports.CalciteButton = CalciteButton;
