@@ -22,7 +22,7 @@ export default function tailwind(opts?: PluginOptions): Plugin {
       debug.time('build start')
       return readFile(options.inputFile).then(async css =>
         postcss([ tailwindcss() ])
-          .process(css)
+          .process(css, { from: options.inputFile })
           .then(async result => {
             debug.time('style tree built')
             if (options.includeTailwindCss) {
