@@ -4,7 +4,7 @@ import test from 'ava'
 import { readFileSync } from 'fs'
 import { rollup } from 'rollup'
 
-test('inline class: literal', async (t) => {
+test('inline class: literal', async t => {
   const bundle = await rollup({
     input: 'test/fixtures/components/inline-class/literal.input.tsx',
     plugins: [ tailwind() ]
@@ -14,7 +14,7 @@ test('inline class: literal', async (t) => {
   t.is(actual, expected)
 })
 
-test('inline class: conditional expression', async (t) => {
+test('inline class: conditional expression', async t => {
   const bundle = await rollup({
     input: 'test/fixtures/components/inline-class/cond-expression.input.tsx',
     plugins: [ tailwind() ]
@@ -24,7 +24,7 @@ test('inline class: conditional expression', async (t) => {
   t.is(actual, expected)
 })
 
-test('style decorator', async (t) => {
+test('style decorator', async t => {
   const bundle = await rollup({
     input: 'test/fixtures/components/decorator/input.tsx',
     plugins: [ tailwind() ]
