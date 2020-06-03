@@ -8,7 +8,7 @@ import { TransformResult } from 'rollup'
 export default function transformTsx(code: string, node: Node, cssRoot: Root): TransformResult {
   let match = /= (.*?Style);/.exec(code)
   if (match) {
-    debug.red(code)
+    debug.red('transformTsx:code:\n',code)
     const s = new MagicString(code)
     const utilityClasses = _buildTailwindClassList(node, cssRoot)
     if (utilityClasses) {
@@ -25,9 +25,10 @@ function _buildTailwindClassList(node: Node, cssRoot: Root): string | undefined 
   if (classes.length) {
     return cssRoot?.nodes?.filter(isRule).reduce((acc: any, rule: Rule) => {
       const match = rule.selector.replace(/\\/, '').match(/([a-zA-Z0-9-]+$|[a-zA-Z0-9-]+:[a-zA-Z0-9-]+)/)
-      return match
-        ? classes.includes(match![0]) ? rule.toString().replace(/(\r\n|\n|\r)/gm, '') + ' \\n' + acc : acc
-        : acc
+      if (match && classes.includes(match![0])) {
+        return rule.toString().replace(/\s+/gm, ' ') + ' \\n' + acc
+      }
+      return acc
     }, '')
   }
 }
