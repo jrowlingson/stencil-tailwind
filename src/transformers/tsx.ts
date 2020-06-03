@@ -55,19 +55,15 @@ function _parseInlineClasses(node: Node) {
 function _parseStyleDecorator(node: Node) {
   let result: string[] = []
   walk.simple(node, {
-    CallExpression(ce) {
-      // @ts-ignore
+    CallExpression(ce: any) {
       if (ce.callee?.name === '__decorate') {
         walk.simple(ce, {
-          Literal(lit) {
+          Literal(lit: any) {
             walk.simple(node, {
-              AssignmentExpression(ae) {
-                // @ts-ignore
+              AssignmentExpression(ae: any) {
                 if(ae.left.property?.name === lit.value) {
-                  // @ts-ignore
                   walk.simple(ae.right.body, {
-                    Property(prop) {
-                      // @ts-ignore
+                    Property(prop: any) {
                       result = result.concat(_trimSizingDslSyntax(prop.key.value).split(' '))
                     }
                   })
