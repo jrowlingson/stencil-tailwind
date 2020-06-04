@@ -97,9 +97,11 @@ class MyComponent {
 
 The DSL is described by the following grammer:
 
-*class-list* → *prefix* < *class* >
+*class-container* → *prefix* < *class-list* >
 
-*class-list* → *prefix* < *class-list class* >
+*class-list* → *class-list class*
+
+*class-list* → *class*
 
 *class* → **string**
 
