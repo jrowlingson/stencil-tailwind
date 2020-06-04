@@ -29,7 +29,7 @@ export default function tailwind(opts?: PluginOptions): Plugin {
               this.emitFile({
                 type: 'asset',
                 source: result.toString(),
-                fileName: 'calcite-tailwind.css'
+                fileName: 'tailwind.css'
               })
             }
             postcssRoot = result.root!
