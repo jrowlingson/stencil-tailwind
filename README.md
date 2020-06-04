@@ -2,9 +2,9 @@
 
 This package is used in order to integrate with [tailwindcss](https://tailwindcss.com/docs/installation/).
 
-First, npm install within the project:
-
 ## Installation
+
+First, npm install within the project:
 
 `npm install stencil-tailwind --save-dev`
 
@@ -25,7 +25,7 @@ export const config: Config = {
 
 ### Create your Tailwind config file (optional)
 
-While Tailwind provides a sensible default configuration it is often desirable to further customize your theme. This configuration can be used as a starting point for such customizations. To customize your Tailwind installation, you will first need to generate a config file for your project using the included Tailwind CLI utility when you install the `stencil-tailwind` npm package.
+While Tailwind provides a sensible default configuration, it is often desirable to further customize your theme. This default configuration can be used as a starting point for such customizations. To customize your Tailwind installation, you will first need to generate a config file for your project using the included Tailwind CLI utility when you install the `stencil-tailwind` npm package.
 
 `npm tailwindcss init`
 
@@ -51,7 +51,7 @@ class MyComponent {
 
 ### @Style
 
-Utilities can be conditionally applied using the `Style` decorator. This decorator provides a simple wrapper for the
+Utilities can be conditionally applied using the `Styles` decorator. This decorator provides a simple wrapper for the
 [`classnames`](https://www.npmjs.com/package/classnames) npm package.
 
 ```jsx
@@ -97,16 +97,20 @@ class MyComponent {
 
 The DSL is described by the following grammer:
 
-*class-list* → *prefix*<*class*>
-*class-list* → *prefix*<*class*>
-*class-list* → *prefix*<*class-list class*>
+*class-list* → *prefix* < *class* >
+
+*class-list* → *prefix* < *class* >
+
+*class-list* → *prefix* < *class-list class* >
+
 *class* → **string**
+
 *prefix* → **string** | ''
 
 
 ### Directives
 
-Use to [`@apply`](https://tailwindcss.com/docs/functions-and-directives/#apply) to inline any existing utility classes into your external component stylesheet files. This is useful when you want to apply utilities to the shadow host.
+Use the [`@apply`](https://tailwindcss.com/docs/functions-and-directives/#apply) directive to inline any existing utility classes into your external component stylesheet files. This is useful when you want to apply utilities to the shadow host.
 
 ```css
 :host {
