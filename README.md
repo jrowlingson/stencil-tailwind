@@ -99,8 +99,6 @@ The DSL is described by the following grammer:
 
 *class-list* → *prefix* < *class* >
 
-*class-list* → *prefix* < *class* >
-
 *class-list* → *prefix* < *class-list class* >
 
 *class* → **string**
