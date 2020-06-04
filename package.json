@@ -1,11 +1,15 @@
 {
   "name": "stencil-tailwind",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "A TailwindCSS Plugin for Stencil",
   "main": "dist/index.js",
   "directories": {
     "test": "test"
   },
+  "keywords": [
+    "stencil",
+    "tailwind"
+  ],
   "scripts": {
     "build": "rollup -c",
     "test": "ava",
@@ -48,6 +52,10 @@
       "!**/recipes/**",
       "!**/types.ts"
     ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jrowlingson/stencil-tailwind.git"
   },
   "module": "dist/index.es.js",
   "types": "types/index.d.ts"

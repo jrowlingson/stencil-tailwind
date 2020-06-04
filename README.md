@@ -129,7 +129,7 @@ export const config: Config = {
   plugins: [
     tailwind({
       inputFile: './app/src/styles/app.css',
-      includeTailwindCss`: false
+      includeTailwindCss: false
     })
   ]
 }
