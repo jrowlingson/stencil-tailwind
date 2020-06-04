@@ -1,7 +1,7 @@
 {
   "name": "stencil-tailwind",
   "version": "0.0.1",
-  "description": "",
+  "description": "A TailwindCSS Plugin for Stencil",
   "main": "dist/index.js",
   "directories": {
     "test": "test"
@@ -12,7 +12,7 @@
     "debug": "export DEBUG=* DEBUG_COLORS=true FORCE_COLOR=1 && rollup -c && ava"
   },
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "peerDependencies": {
     "rollup": "^2.10.2",
     "typescript": ">= 2.1.0"
