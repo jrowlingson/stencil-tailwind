@@ -119,5 +119,20 @@ The DSL is described by the following grammer:
 
 ## Options
 
-* `inputFile`: the input file path (default: `app.css`)
+The following plugin options may be configured:
+
+### stencil.config.ts
+
+```js
+export const config: Config = {
+  plugins: [
+    tailwind({
+      inputFile: './app/src/styles/app.css',
+      includeTailwindCss`: false
+    })
+  ]
+}
+```
+
+* `inputFile`: the input file path (default: `.src/app.css`)
 * `includeTailwindCss`: include global `tailwind.css` in the bundle (default: `true`)
