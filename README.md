@@ -1,6 +1,7 @@
 # stencil-tailwind
 
-This package is used in order to integrate with [tailwindcss](https://tailwindcss.com/docs/installation/).
+This package is used in order to integrate with [tailwindcss](https://tailwindcss.com/docs/installation/). It provides
+simple functionality for supporting a [utility-first](https://tailwindcss.com/docs/utility-first) approach within the Shadow DOM.
 
 ## Installation
 
@@ -49,7 +50,7 @@ class MyComponent {
 }
 ```
 
-### @Style
+### @Styles
 
 Utilities can be conditionally applied using the `Styles` decorator. This decorator provides a simple wrapper for the
 [`classnames`](https://www.npmjs.com/package/classnames) npm package.
