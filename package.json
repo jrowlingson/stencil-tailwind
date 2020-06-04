@@ -11,9 +11,9 @@
     "tailwind"
   ],
   "scripts": {
-    "build": "rollup -c",
+    "build": "rollup -c && cp ./src/app.css ./dist/",
     "test": "ava",
-    "debug": "export DEBUG=* DEBUG_COLORS=true FORCE_COLOR=1 && rollup -c && ava"
+    "debug": "export DEBUG=* DEBUG_COLORS=true FORCE_COLOR=1 && npm run build && ava"
   },
   "author": "",
   "license": "MIT",
