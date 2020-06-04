@@ -73,6 +73,16 @@ class MyComponent {
 }
 ```
 
+### Directives
+
+Use the [`@apply`](https://tailwindcss.com/docs/functions-and-directives/#apply) directive to inline any existing utility classes into your external component stylesheet files. This is useful when you want to apply utilities to the shadow host.
+
+```css
+:host {
+  @apply font-bold py-2 px-4 rounded;
+}
+```
+
 ### DSL (advanced)
 
 A simple, declarative, runtime DSL can be used to provide sugar for conditionally applied utilties based on a
@@ -106,17 +116,6 @@ The DSL is described by the following grammer:
 *class* → **string**
 
 *prefix* → **string** | ''
-
-
-### Directives
-
-Use the [`@apply`](https://tailwindcss.com/docs/functions-and-directives/#apply) directive to inline any existing utility classes into your external component stylesheet files. This is useful when you want to apply utilities to the shadow host.
-
-```css
-:host {
-  @apply font-bold py-2 px-4 rounded;
-}
-```
 
 ## Options
 
