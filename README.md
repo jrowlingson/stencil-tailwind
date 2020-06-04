@@ -119,7 +119,5 @@ The DSL is described by the following grammer:
 
 ## Options
 
-Sass options can be passed to the plugin within the stencil config, which are used directly by `sass`. Please reference [sass documentation](https://www.npmjs.com/package/sass) for all available options. Note that this plugin automatically adds the component's directory to the `includePaths` array.
-
 * `inputFile`: the input file path (default: `app.css`)
 * `includeTailwindCss`: include global `tailwind.css` in the bundle (default: `true`)
