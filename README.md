@@ -128,12 +128,12 @@ The following plugin options may be configured:
 export const config: Config = {
   plugins: [
     tailwind({
-      inputFile: './app/src/styles/app.css',
+      inputFile: './src/styles/app.css',
       includeTailwindCss: false
     })
   ]
 }
 ```
 
-* `inputFile`: the input file path (default: `.src/app.css`)
-* `includeTailwindCss`: include global `tailwind.css` in the bundle (default: `true`)
+* `inputFile`: **(optional)** a stylesheet filepath to be used in place of the default.
+* `includeTailwindCss`: **(optional)** include global `tailwind.css` in the bundle (default: `true`)

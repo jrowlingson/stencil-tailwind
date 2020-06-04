@@ -1,4 +1,5 @@
 import debug from './util/debug'
+import path from 'path'
 import postcss, { Root } from 'postcss'
 import tailwindcss from 'tailwindcss'
 import transformSass from './transformers/sass'
@@ -51,7 +52,7 @@ export default function tailwind(opts?: PluginOptions): Plugin {
 
 function _buildOptions(opts?: PluginOptions): PluginOptions {
   const defaults: PluginOptions = {
-    inputFile: 'src/app.css',
+    inputFile: path.join(__dirname, '/app.css'),
     includeTailwindCss: true
   }
   return Object.assign({}, defaults, opts)
