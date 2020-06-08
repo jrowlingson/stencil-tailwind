@@ -34,9 +34,19 @@ test('style decorator', async t => {
   t.is(actual, expected)
 })
 
-test('sass: @apply', async t => {
+test('sass: @apply (scss)', async t => {
   const bundle = await rollup({
     input: 'test/fixtures/components/styles/apply.input.scss',
+    plugins: [ tailwind() ]
+  })
+  const actual = await getCodeFromBundle(bundle)
+  const expected = readFileSync('test/fixtures/components/styles/apply.output.js', 'utf-8');
+  t.is(actual, expected)
+})
+
+test('sass: @apply (css)', async t => {
+  const bundle = await rollup({
+    input: 'test/fixtures/components/styles/apply.input.css',
     plugins: [ tailwind() ]
   })
   const actual = await getCodeFromBundle(bundle)

@@ -39,7 +39,7 @@ export default function tailwind(opts?: PluginOptions): Plugin {
     },
 
     async transform(sourceText, fileName) {
-      if (fileName.includes('.scss')) {
+      if (fileName.match(/\.s?css/)) {
         return await transformSass(sourceText)
       } else if (fileName.includes('.tsx')) {
         return transformTsx(sourceText, this.parse(sourceText, {}), postcssRoot)

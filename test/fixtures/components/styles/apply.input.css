@@ -1,0 +1,1 @@
+const fooCss = ".foo { @apply p-4 flex items-center }"; export default fooCss;
