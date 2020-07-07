@@ -21,7 +21,7 @@ export default function tailwind(opts?: PluginOptions): Plugin {
 
     async buildStart() {
       debug.time('build start')
-      return readFile(options.inputFile).then(async css =>
+      return readFile(options.inputFile!).then(async css =>
         postcss([ tailwindcss() ])
           .process(css, { from: options.inputFile })
           .then(async result => {

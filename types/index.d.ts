@@ -2,8 +2,8 @@ export { Plugin } from 'rollup'
 
 export interface PluginOptions {
 
-  inputFile: string,
-  includeTailwindCss: boolean
+  inputFile?: string,
+  includeTailwindCss?: boolean
 
 }
 
