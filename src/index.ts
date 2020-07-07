@@ -22,7 +22,7 @@ export default function tailwind(opts?: PluginOptions): Plugin {
     async buildStart() {
       debug.time('build start')
       return readFile(options.inputFile!).then(async css =>
-        postcss([ tailwindcss() ])
+        postcss([ options.tailwind! ])
           .process(css, { from: options.inputFile })
           .then(async result => {
             debug.time('style tree built')
@@ -52,6 +52,7 @@ export default function tailwind(opts?: PluginOptions): Plugin {
 
 function _buildOptions(opts?: PluginOptions): PluginOptions {
   const defaults: PluginOptions = {
+    tailwind: tailwindcss(),
     inputFile: path.join(__dirname, '/app.css'),
     includeTailwindCss: true
   }
