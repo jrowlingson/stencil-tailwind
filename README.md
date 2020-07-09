@@ -125,9 +125,12 @@ The following plugin options may be configured:
 ### stencil.config.ts
 
 ```js
+import tailwindcss from 'tailwindcss'
+
 export const config: Config = {
   plugins: [
     tailwind({
+      tailwind: tailwindcss('tailwind.config.js'),
       inputFile: './src/styles/app.css',
       includeTailwindCss: false
     })
@@ -135,5 +138,6 @@ export const config: Config = {
 }
 ```
 
+* `tailwind`: **(optional)** your own configuration file and version of TailwindCSS to be used. 
 * `inputFile`: **(optional)** a stylesheet filepath to be used in place of the default.
 * `includeTailwindCss`: **(optional)** include global `tailwind.css` in the bundle (default: `true`)

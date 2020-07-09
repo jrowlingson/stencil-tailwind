@@ -1,9 +1,12 @@
+import postcss from 'postcss';
+
 export { Plugin } from 'rollup'
 
 export interface PluginOptions {
 
-  inputFile: string,
-  includeTailwindCss: boolean
+  tailwind?: postcss.AcceptedPlugin;
+  inputFile?: string,
+  includeTailwindCss?: boolean
 
 }
 
