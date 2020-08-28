@@ -3,10 +3,9 @@
 This package is used in order to integrate with [tailwindcss](https://tailwindcss.com/docs/installation/). It provides
 simple functionality for supporting a [utility-first](https://tailwindcss.com/docs/utility-first) workflow within the Shadow DOM.
 
-Note, this plugin specificially adds support for inline utilities (idiomatic Tailwind). If you find that this is not a
-requirement for your project you can opt to include Tailwind via `@stencil/postcss`. This will allow you to use the
-`@apply` directive and `theme()` function within your component's stylesheet. You can get started with the following
-configuration:
+Note, this plugin specificially adds support for _inline utilities_ (idiomatic Tailwind). If you find that this is not a
+requirement for your project you can opt to include Tailwind via [`@stencil/postcss`](https://github.com/ionic-team/stencil-postcss). This will allow you to use the
+[`@apply`](https://tailwindcss.com/docs/functions-and-directives/#apply) directive and [`theme()`](https://tailwindcss.com/docs/functions-and-directives/#theme) function within your component's stylesheet. You can get started with the following configuration:
 
 ```ts
 import { Config } from '@stencil/core'
@@ -50,6 +49,7 @@ export const config: Config = {
   devServer: {
     reloadStrategy: 'pageReload',
   }
+}
 ```
 
 ### Create your Tailwind config file (optional)
