@@ -58,7 +58,7 @@ While Tailwind provides a sensible default configuration, it is often desirable 
 
 `npm tailwindcss init`
 
-This will generate a [`tailwind.conig.js`](https://tailwindcss.com/docs/configuration) file at the root of your project.
+This will generate a [`tailwind.config.js`](https://tailwindcss.com/docs/configuration) file at the root of your project.
 
 ## Usage
 
