@@ -38,7 +38,7 @@ function _buildTailwindClassList(node: Node, cssRoot: Root): string | undefined 
         }
       });
       return atRule;
-    });
+    }).filter(rule => rule.nodes !== []);
     const newRoot = root({})
 
     if (nodes) {
