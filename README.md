@@ -56,7 +56,7 @@ export const config: Config = {
 
 While Tailwind provides a sensible default configuration, it is often desirable to further customize your theme. This default configuration can be used as a starting point for such customizations. To customize your Tailwind installation, you will first need to generate a config file for your project using the included Tailwind CLI utility when you install the `stencil-tailwind` npm package.
 
-`npm tailwindcss init`
+`npx tailwindcss init`
 
 This will generate a [`tailwind.conig.js`](https://tailwindcss.com/docs/configuration) file at the root of your project.
 
