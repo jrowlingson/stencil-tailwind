@@ -2,7 +2,7 @@ import MagicString from 'magic-string'
 import debug from '../util/debug'
 import walk from 'acorn-walk'
 import { Node } from 'acorn'
-import { Root, ChildNode, Rule } from 'postcss'
+import { root, AtRule, ChildNode, Root, Rule } from 'postcss'
 import { TransformResult } from 'rollup'
 
 export default function transformTsx(code: string, node: Node, cssRoot: Root): TransformResult {
@@ -15,7 +15,7 @@ export default function transformTsx(code: string, node: Node, cssRoot: Root): T
       s.overwrite(match.index, match.index + match[1].length + 2,`= \`${utilityClasses} \${${match[1]}}\``)
     }
     return {
-      code: s.toString().replace(/\\:/g, '\\\\:')
+      code: s.toString().replace(/\\/g, '\\\\')
     }
   }
 }
@@ -23,18 +23,39 @@ export default function transformTsx(code: string, node: Node, cssRoot: Root): T
 function _buildTailwindClassList(node: Node, cssRoot: Root): string | undefined {
   const classes = _parseClasses(node)
   if (classes.length) {
-    return cssRoot?.nodes?.filter(isRule).reduce((acc: any, rule: Rule) => {
-      const match = rule.selector.replace(/\\/, '').match(/([a-zA-Z0-9-]+$|[a-zA-Z0-9-]+:[a-zA-Z0-9-]+)/)
-      if (match && classes.includes(match![0])) {
-        return rule.toString().replace(/\s+/gm, ' ') + ' \\n' + acc
+    console.log(classes);
+    const nodes = cssRoot?.nodes?.filter(isRule).filter(rule => {
+      const processedRule = rule.selector.replace(/\\/g, '');
+      const match = processedRule.match(/(([a-zA-Z0-9-]+$|[a-zA-Z0-9-]+).?(:?[a-zA-Z0-9-.]+)?)/)
+      if (match && classes.includes(match[0])) {
+        return rule
       }
-      return acc
-    }, '')
+    });
+
+    const atRules = cssRoot?.nodes?.filter(isAtRule).map(atRule => {
+      atRule.nodes = atRule.nodes?.filter(isRule).filter(rule => {
+        const match = rule.selector.replace(/\\/g, '').match(/([a-zA-Z0-9-]+$|[a-zA-Z0-9-]+:[a-zA-Z0-9-]+)/);
+        if (match && classes.includes(match[0])) {
+          return rule
+        }
+      });
+      return atRule;
+    }).filter(rule => (rule.nodes?.length));
+    const newRoot = root({})
+
+    if (nodes) {
+      newRoot.append(nodes);
+    }
+    if (atRules) {
+      newRoot.append(atRules);
+    }
+
+    return newRoot.toString();
   }
 }
 
 function _parseClasses(node: Node) {
-  return _parseStyleDecorator(node).concat(_parseInlineClasses(node))
+  return _parseStyleDecorator(node).concat(_parseInlineClasses(node)).filter(c => c !== "")
 }
 
 function _parseInlineClasses(node: Node) {
@@ -84,5 +105,9 @@ function _trimSizingDslSyntax(s: string) {
 }
 
 function isRule(node: ChildNode): node is Rule {
-  return (node as Rule).selector !== undefined;
+  return node.type === "rule";
+}
+
+function isAtRule(node: ChildNode): node is AtRule {
+  return node.type === "atrule"
 }
