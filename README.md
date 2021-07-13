@@ -9,7 +9,7 @@ requirement for your project you can opt to include Tailwind via [`@stencil/post
 
 ```ts
 import { Config } from '@stencil/core'
-import postcss from '@stencil/postcss'
+import { postcss } from '@stencil/postcss'
 import tailwind from 'tailwindcss'
 
 export const config: Config = {
