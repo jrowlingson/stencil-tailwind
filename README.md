@@ -1,5 +1,7 @@
 # stencil-tailwind
 
+__!!! :warning: DEPRECATED :warning: !!! See https://www.npmjs.com/package/stencil-tailwind-plugin__
+
 This package is used in order to integrate with [tailwindcss](https://tailwindcss.com/docs/installation/). It provides
 simple functionality for supporting a [utility-first](https://tailwindcss.com/docs/utility-first) workflow within the Shadow DOM.
 
